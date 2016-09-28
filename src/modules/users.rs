@@ -22,9 +22,9 @@ pub fn user_login<'a>(req: &mut Request, mut res: Response<'a>) -> MiddlewareRes
 		res.set(StatusCode::PreconditionFailed);
 		payload = "{\"message\": \"Please fill username/password!\"}".to_string();
 	} else {
-		let pools = request_connection();
+		let pool = request_connection().clone();
 
-		let mut data = pools.prep_exec("SELECT password, fullname, email, username FROM users WHERE username = :username", params!{"username"=>username}).unwrap();
+		let mut data = pool.prep_exec("SELECT password, fullname, email, username FROM users WHERE username = :username", params!{"username"=>username}).unwrap();
 
 		let row = data.next();
 
